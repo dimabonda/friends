@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { IComment } from "types/Comment";
+import { IComment } from "@/types/Comment";
 
 interface CommentsState {
     list: Record<number, IComment[]>;

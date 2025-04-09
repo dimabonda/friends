@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IPost } from 'types/Post';
-import { setPost, setPosts, updatePost } from 'state/slices/postSlice';
+import { IPost } from '@/types/Post';
+import { setPost, setPosts, updatePost } from '@/state/slices/postSlice';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 interface ICreatePostResponse {
     message: string;

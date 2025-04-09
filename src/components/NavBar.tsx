@@ -24,14 +24,14 @@ import {
     Close,
 } from "@mui/icons-material"
 
-import FlexBetween from "components/FlexBetween";
+import FlexBetween from "@/components/FlexBetween";
 
-import type { RootState } from 'state/store'
+import type { RootState } from '@/state/store'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { toggleMode } from "state/slices/themeSlice";
-import { logout } from "state/slices/authSlice";
-import paths from "paths";
+import { toggleMode } from "@/state/slices/themeSlice";
+import { logout } from "@/state/slices/authSlice";
+import paths from "@/paths";
 
 interface NavBarProps {
 

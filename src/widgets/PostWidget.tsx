@@ -5,23 +5,23 @@ import {
     ShareOutlined,
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Typography, useTheme, InputBase } from "@mui/material";
-import FlexBetween from "components/FlexBetween";
-import { WidgetWrapper } from "components/WidgetWrapper";
+import FlexBetween from "@/components/FlexBetween";
+import { WidgetWrapper } from "@/components/WidgetWrapper";
 import { FC, useState } from "react";
 import { useSelector } from "react-redux";
-import { IPost } from "types/Post";
-import type { RootState } from 'state/store'
-import { useLikePostMutation } from "state/api/postApi";
-import { useToast } from "hooks/useToast";
-import { IComment } from "types/Comment";
-import Friend from "components/Friend";
-import CommentInput from "components/CommentInput";
-import { IAuthError } from "types/Errors";
-import { useGetListQuery } from "state/api/commentApi";
-import UserImage from "components/UserImage";
-import { Comment } from "components/Comment";
+import { IPost } from "@/types/Post";
+import type { RootState } from '@/state/store'
+import { useLikePostMutation } from "@/state/api/postApi";
+import { useToast } from "@/hooks/useToast";
+import { IComment } from "@/types/Comment";
+import Friend from "@/components/Friend";
+import CommentInput from "@/components/CommentInput";
+import { IAuthError } from "@/types/Errors";
+import { useGetListQuery } from "@/state/api/commentApi";
+import UserImage from "@/components/UserImage";
+import { Comment } from "@/components/Comment";
 
-const BASE_URL = process.env.REACT_APP_API_URL || "";
+const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL || "";
 
 const PostWidget: FC<IPost> = ({
     id,

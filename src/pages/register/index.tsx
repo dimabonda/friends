@@ -10,18 +10,18 @@ import {
     useTheme 
 } from "@mui/material";
 import Dropzone from "react-dropzone";
-import FlexBetween from "components/FlexBetween";
+import FlexBetween from "@/components/FlexBetween";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { AuthLayout } from "components/AuthLayout";
-import paths from 'paths';
+import { AuthLayout } from "@/components/AuthLayout";
+import paths from '@/paths';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { useRegisterMutation } from "state/api/authApi";
-import { setCredentials } from "state/slices/authSlice";
-import { useToast } from "hooks/useToast";
-import { IAuthError } from "types/Errors";
+import { useRegisterMutation } from "@/state/api/authApi";
+import { setCredentials } from "@/state/slices/authSlice";
+import { useToast } from "@/hooks/useToast";
+import { IAuthError } from "@/types/Errors";
 
 
 const validationSchema = yup.object({

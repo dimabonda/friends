@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { IPost } from "types/Post";
+import { IPost } from "@/types/Post";
 
 interface PostState {
     list: IPost[]

@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from 'state/store'
-import PostWidget from "./PostWidget";
-import { useGetListQuery, useGetByUserListQuery } from "state/api/postApi";
+import type { RootState } from '@/state/store'
+import PostWidget from "@/widgets/PostWidget";
+import { useGetListQuery, useGetByUserListQuery } from "@/state/api/postApi";
 import { Button } from "@mui/material";
 
 interface IPostsWidget {

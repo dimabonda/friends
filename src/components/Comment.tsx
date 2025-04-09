@@ -1,10 +1,10 @@
 import { FC, useState } from "react";
 import { Box, Divider, IconButton, Button, useTheme, InputBase, Typography } from "@mui/material";
-import { useCreateCommentMutation } from "state/api/commentApi";
-import { IAuthError } from "types/Errors";
-import { useToast } from "hooks/useToast";
-import FlexBetween from "components/FlexBetween";
-import UserImage from "components/UserImage";
+import { useCreateCommentMutation } from "@/state/api/commentApi";
+import { IAuthError } from "@/types/Errors";
+import { useToast } from "@/hooks/useToast";
+import FlexBetween  from "@/components/FlexBetween";
+import UserImage from "@/components/UserImage";
 import {
     FavoriteBorderOutlined,
     FavoriteOutlined,

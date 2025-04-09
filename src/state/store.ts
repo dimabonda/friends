@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import themeReducer from "state/slices/themeSlice";
-import { authApi } from 'state/api/authApi';
-import { postApi } from 'state/api/postApi';
-import { userApi } from 'state/api/userApi';
-import { commentApi } from 'state/api/commentApi';
-import authReducer from 'state/slices/authSlice';
-import postReducer from 'state/slices/postSlice';
-import commentReducer from 'state/slices/commentSlice';
+import themeReducer from "@/state/slices/themeSlice";
+import { authApi } from '@/state/api/authApi';
+import { postApi } from '@/state/api/postApi';
+import { userApi } from '@/state/api/userApi';
+import { commentApi } from '@/state/api/commentApi';
+import authReducer from '@/state/slices/authSlice';
+import postReducer from '@/state/slices/postSlice';
+import commentReducer from '@/state/slices/commentSlice';
 
 
 export const store = configureStore({

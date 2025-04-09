@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
-import type { RootState } from 'state/store'
-import paths from 'paths';
+import type { RootState } from '@/state/store'
+import paths from '@/paths';
 
 interface UserProviderProps {
     children: React.ReactNode;

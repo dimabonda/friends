@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { IUser } from 'types/User';
-import { IFriend } from 'types/Friend';
+import { IUser } from '@/types/User';
+import { IFriend } from '@/types/Friend';
 
 interface IAuthState {
     token: string | null;
