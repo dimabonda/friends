@@ -10,11 +10,11 @@ interface IUserImageProps {
 const UserImage: FC<IUserImageProps> = ({ image, size = "60px" }) => {
 	const imageUrl = `${BASE_URL}${image}`;
 	return (
-		<Box width={60} height={60}>
+		<Box>
 			<Avatar 
 				sx={{
-					width: "60px",
-					height: "60px",
+					width: size,
+					height: size,
 				}}
 				src={imageUrl}
 			/>

@@ -11,4 +11,7 @@ export interface IComment {
             url: string,
         }
     },
+    post: {
+        id: number,
+    }
 }

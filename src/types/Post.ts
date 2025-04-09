@@ -19,5 +19,6 @@ export interface IPost {
         url: string
     },
     likes: ILike[],
-    comments: IComment[]
+    commentCount: string,
+    // comments: IComment[]
 }

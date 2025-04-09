@@ -51,8 +51,7 @@ const MyPostWidget = ({ photo }: any) => {
         if(response && response.message){
           showToast(response.message, 'success');
         }
-        
-        // dispatch(setPosts({ posts })); //TODO set posts after creating post
+
         setImage(null);
         setPost("");
         setIsImage(false);
@@ -70,11 +69,16 @@ const MyPostWidget = ({ photo }: any) => {
 					placeholder="What's on your mind..."
 					onChange={(e) => setPost(e.target.value)}
 					value={post}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" && !e.shiftKey) { 
+							handlePost();
+						}
+					}}
 					sx={{
-					width: "100%",
-					backgroundColor: palette.neutral.light,
-					borderRadius: "2rem",
-					padding: "1rem 2rem",
+						width: "100%",
+						backgroundColor: palette.neutral.light,
+						borderRadius: "2rem",
+						padding: "1rem 2rem",
 					}}
 				/>
 			</FlexBetween>

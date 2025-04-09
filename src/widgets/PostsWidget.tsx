@@ -11,12 +11,12 @@ interface IPostsWidget {
 
 const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
   	const dispatch = useDispatch();
-	const token = useSelector((state: any) => state.auth.token);
+	const token = useSelector((state: RootState) => state.auth.token);
 
 	const posts = useSelector((state: RootState) => state.post.list);
 	
 	const [ lastPostId, setLastPostId ] = useState<number | null>(null);
-
+	console.log("posts", posts)
 	// const {
 	//   data: userPosts,
 	//   isLoading: isUserLoading,
@@ -51,18 +51,18 @@ const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
 					createdAt,
 					image,
 					likes,
-					comments,
+					commentCount,
 				}) => (
-				<PostWidget
-					key={id}
-					id={id}
-					createdAt={createdAt}
-					image={image}
-					user={user}
-					title={title}
-					likes={likes}
-					comments={comments}
-				/>
+					<PostWidget
+						key={id}
+						id={id}
+						createdAt={createdAt}
+						image={image}
+						user={user}
+						title={title}
+						likes={likes}
+						commentCount={commentCount}
+					/>
 				)
 			)}
 			

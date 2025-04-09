@@ -102,6 +102,7 @@ export const postApi = createApi({
                 try {
                     const { data } = await queryFulfilled;
                     const post = data?.data;
+                    console.log("post", post)
                     if (post){
                         dispatch(updatePost({post}));
                     }
