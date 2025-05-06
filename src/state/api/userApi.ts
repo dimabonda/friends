@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IUser } from 'types/User';
-import { IFriend } from 'types/Friend';
-import { setCredentials, updateUserFriends } from 'state/slices/authSlice';
+import { IUser } from '@/types/User';
+import { IFriend } from '@/types/Friend';
+import { setCredentials, updateUserFriends } from '@/state/slices/authSlice';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 interface IMeResponse {
     jwt: string;

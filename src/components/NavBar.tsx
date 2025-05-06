@@ -1,5 +1,3 @@
-
-
 import { FC, useState } from "react";
 import { 
     Box, 
@@ -24,25 +22,26 @@ import {
     Close,
 } from "@mui/icons-material"
 
-import FlexBetween from "components/FlexBetween";
+import FlexBetween from "@/components/FlexBetween";
 
-import type { RootState } from 'state/store'
+import type { RootState } from '@/state/store'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { toggleMode } from "state/slices/themeSlice";
-import { logout } from "state/slices/authSlice";
-import paths from "paths";
+import { toggleMode } from "@/state/slices/themeSlice";
+import { logout } from "@/state/slices/authSlice";
+import paths from "@/paths";
 
 interface NavBarProps {
 
 }
 const NavBar:FC<NavBarProps> = () => {
+    const loggedInUser = useSelector((state: RootState) => state.auth.user);
     const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isNotMobileScreen = useMediaQuery("(min-width: 1000px)");
-    const fullName = `user user`;
+    const fullName = `${loggedInUser?.firstName} ${loggedInUser?.lastName}`;
 
     const neutralLight = theme.palette.neutral.light;
     const dark = theme.palette.neutral.dark;
@@ -114,7 +113,7 @@ const NavBar:FC<NavBarProps> = () => {
                             value={fullName}
                             sx={{
                                 backgroundColor: neutralLight,
-                                width: "150px",
+                                minWidth: "150px",
                                 borderRadius: "0.25rem",
                                 p: "0.25rem 1rem",
                                 "& .MuiSvgIcon-root": {

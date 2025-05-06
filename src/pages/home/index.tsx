@@ -1,11 +1,11 @@
 import { Box, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
-import MyPostWidget from "widgets/MyPostWidget";
-import UserWidget from "widgets/UserWidget";
+import MyPostWidget from "@/widgets/MyPostWidget";
+import UserWidget from "@/widgets/UserWidget";
 // import MyPostWidget from "scenes/widgets/MyPostWidget";
-import PostsWidget from "widgets/PostsWidget";
+import PostsWidget from "@/widgets/PostsWidget";
 import { useEffect } from "react";
-import type { RootState } from 'state/store'
+import type { RootState } from '@/state/store'
 // import AdvertWidget from "scenes/widgets/AdvertWidget";
 // import FriendListWidget from "scenes/widgets/FriendListWidget";
 

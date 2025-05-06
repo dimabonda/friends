@@ -11,3 +11,24 @@ app{
 * {
   box-sizing: border-box;
 }
+
+/* .mac-scroll-hover .simplebar-track.simplebar-vertical {
+  opacity: 1;
+}
+
+.simplebar-track.simplebar-vertical {
+  width: 6px;
+  background: transparent;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+.simplebar-scrollbar:before {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.simplebar-scrollbar:hover:before {
+  background: rgba(0, 0, 0, 0.5);
+} */

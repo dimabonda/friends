@@ -3,12 +3,12 @@ import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import FlexBetween from "./FlexBetween";
-import UserImage from "./UserImage";
-import type { RootState } from 'state/store'
-import { useFollowMutation } from "state/api/userApi";
-import { useToast } from "hooks/useToast";
-import { IAuthError } from "types/Errors";
+import FlexBetween from "@/components/FlexBetween";
+import UserImage from "@/components/UserImage";
+import type { RootState } from '@/state/store'
+import { useFollowMutation } from "@/state/api/userApi";
+import { useToast } from "@/hooks/useToast";
+import { IAuthError } from "@/types/Errors";
 
 interface IFriend {
 	id: number;

@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from 'react';
 import { Snackbar, Alert, AlertColor } from '@mui/material';
-import { ToastContext } from 'context/ToastContext';
+import { ToastContext } from '@/context/ToastContext';
 
 type Toast = {
     open: boolean;

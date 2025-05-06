@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IPost } from 'types/Post';
-import { setPost, setPosts, updatePost } from 'state/slices/postSlice';
+import { IPost } from '@/types/Post';
+import { setPost, setPosts, updatePost, deletePost } from '@/state/slices/postSlice';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 interface ICreatePostResponse {
     message: string;
@@ -32,10 +32,13 @@ interface IPostListResponse {
     };
 }
 
-interface ILikePostResponse {
+interface IPostResponse {
     message: string;
     data: IPost;
 }
+
+
+
 
 export const postApi = createApi({
     reducerPath: 'postApi',
@@ -93,7 +96,7 @@ export const postApi = createApi({
                 method: "GET",
             })
         }),
-        likePost: builder.mutation<ILikePostResponse, ILikePostRequest>({
+        likePost: builder.mutation<IPostResponse, ILikePostRequest>({
             query: ({postId}) => ({
                 url: `api/post/${postId}/like`,
                 method: "POST",
@@ -110,7 +113,26 @@ export const postApi = createApi({
                     console.error('Error like:', err);
                 }
             },
-        })
+        }),
+        deletePost: builder.mutation<IPostResponse, {postId: string}>({
+            query: ({postId}) => ({
+                url: `api/post/${postId}`,
+                method: "DELETE",
+            }),
+            onQueryStarted: async (_, { dispatch, queryFulfilled }) => {    
+                try {
+                    const { data } = await queryFulfilled;
+                    console.log("delete post", data);
+                    const post = data?.data;
+                    if (post && post.id){
+                        dispatch(deletePost({postId: post.id}));
+                    }
+                    
+                } catch (err) {
+                    console.error('Error like:', err);
+                }
+            }   
+        }),
     })
 });
 
@@ -120,4 +142,5 @@ export const {
     useGetPostQuery,
     useGetByUserListQuery,
     useLikePostMutation,
+    useDeletePostMutation,
 } = postApi;

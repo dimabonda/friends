@@ -1,15 +1,15 @@
 import { FC, useContext } from "react";
 import { Box, Button, Typography, TextField, useMediaQuery, useTheme, CircularProgress, } from "@mui/material";
-import { AuthLayout } from "components/AuthLayout";
+import { AuthLayout } from "@/components/AuthLayout";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import paths from 'paths';
-import { useLoginMutation } from "state/api/authApi";
-import { IUser } from "types/User";
-import { IAuthError } from "types/Errors";
+import paths from '@/paths';
+import { useLoginMutation } from "@/state/api/authApi";
+import { IUser } from "@/types/User";
+import { IAuthError } from "@/types/Errors";
 
-import { useToast } from "hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 
 interface ILoginResponse {
     jwt: string;
