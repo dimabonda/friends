@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { setComments, setComment } from '@/state/slices/commentSlice';
+import { setComments, setComment, updateCommet } from '@/state/slices/commentSlice';
 import { incrementCommentCount } from '@/state/slices/postSlice';
 import { IComment } from '@/types/Comment';
 
@@ -10,7 +10,7 @@ interface ICreateCommentRequest {
     text: string,
 }
 
-interface ICreateCommentResponse {
+interface ICommentResponse {
     message: string,
     data: IComment
 }
@@ -29,6 +29,10 @@ interface ICommentListResponse {
     },
 }
 
+interface ILikeCommentRequest {
+    commentId: string,
+}
+
 export const commentApi = createApi({
     reducerPath: "commentApi",
     baseQuery: fetchBaseQuery({
@@ -42,7 +46,7 @@ export const commentApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        createComment: builder.mutation<ICreateCommentResponse, ICreateCommentRequest>({
+        createComment: builder.mutation<ICommentResponse, ICreateCommentRequest>({
             query: (data) => ({
                 url: 'api/comments/create',
                 method: 'POST',
@@ -79,6 +83,25 @@ export const commentApi = createApi({
                     console.error('Error fetching comment list:', err);
                 }
             },
+        }),
+        likeComment: builder.mutation<ICommentResponse, ILikeCommentRequest>({
+            query: ({ commentId }) => ({
+                url: `api/comments/${commentId}/like`,
+                method: 'POST',
+            }),
+            onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+                try {
+                    const { data } = await queryFulfilled;
+
+                    const comment = data?.data;
+                    if(comment && comment.post && comment.post.id){
+                        dispatch(updateCommet({comment}));
+                    }
+
+                } catch (err) {
+                    console.error('Error liking comment:', err);
+                }
+            }
         })
     })
 })
@@ -86,4 +109,5 @@ export const commentApi = createApi({
 export const {
     useCreateCommentMutation,
     useGetListQuery,
+    useLikeCommentMutation,
 } = commentApi

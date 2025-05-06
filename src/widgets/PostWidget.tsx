@@ -4,6 +4,7 @@ import {
     FavoriteOutlined,
     ShareOutlined,
 } from "@mui/icons-material";
+import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Divider, IconButton, Typography, useTheme, InputBase } from "@mui/material";
 import FlexBetween from "@/components/FlexBetween";
 import { WidgetWrapper } from "@/components/WidgetWrapper";
@@ -20,6 +21,12 @@ import { IAuthError } from "@/types/Errors";
 import { useGetListQuery } from "@/state/api/commentApi";
 import UserImage from "@/components/UserImage";
 import { Comment } from "@/components/Comment";
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
+import { CustomScroll } from "@/components/CustomScroll";
+import { useHasVerticalScroll } from "@/hooks/useHasVerticalScroll";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { useDeletePostMutation } from "@/state/api/postApi";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL || "";
 
@@ -32,7 +39,7 @@ const PostWidget: FC<IPost> = ({
     createdAt,
     commentCount,
 }) => {
-
+	
 	const { palette } = useTheme();
     const main = palette.neutral.main;
     const primary = palette.primary.main;
@@ -41,22 +48,38 @@ const PostWidget: FC<IPost> = ({
 
     const postImageUrl = `${BASE_URL}${image?.url}`;
 	const userFullName = user.firstName + ' ' + user.lastName;
-
-	const [likePost, {isLoading }] = useLikePostMutation();
+	const loggedInUserId = useSelector((state: RootState) => state.auth.user?.id);
+	const [ likePost, {isLoading }] = useLikePostMutation();
 	const [ lastCommentId, setLastCommentId ] = useState<number | null | undefined>(undefined);
 
 	const { 
 		isError,
 		isLoading: isLoadingGetList,
+		isFetching,
 		data,
 	} = useGetListQuery(
 		{ lastCommentId, postId: String(id), pageSize: 5},
 		{ skip: !token || lastCommentId === undefined}
 	)
 
+	const isShowDeleteButton = loggedInUserId === user.id;
+	const [ deletePost, { isLoading: isDeleteLoading }] = useDeletePostMutation();
+
+	const handleDeletePost = async () => {
+		try {
+			const response = await deletePost({postId: String(id)}).unwrap();
+            if(response?.message){
+                showToast(response.message, 'success');
+            }
+		} catch (error) {
+			const err = error as IAuthError;
+			showToast(err.data?.error?.message || 'Failed to delete post', 'error');
+		}
+	}
+
 	const { showToast } = useToast();
     const [isComments, setIsComments] = useState(false);
-    const loggedInUserId = useSelector((state: RootState) => state.auth.user?.id);
+    
 
 	const likedIds = new Set(likes.map(like => like.id));
 	
@@ -64,12 +87,28 @@ const PostWidget: FC<IPost> = ({
     const likeCount = likes.length;
 
 	const comments = useSelector((state: RootState) => state.comment.list[id] || null)
+	const { hasScroll, ref } = useHasVerticalScroll(comments?.length || 0);
 
-	
+	const handleCommentClick = () => {
+		if (commentCount && !comments){
+			handleUpdateCommentList();
+		}
+		setIsComments(!isComments);
+	}
+
 	const handleUpdateCommentList = () => {
 		setLastCommentId(comments && comments.length > 0 ? comments[comments.length - 1]?.id : null)
 	}
 
+	const handleScroll = (e: Event) => {
+		const target = e.target as HTMLElement;
+				  
+		const scrollBottom = target.scrollHeight - target.scrollTop - target.clientHeight;
+
+		if (scrollBottom < 5 && !isFetching && data?.data?.hasMore) {
+		  handleUpdateCommentList();
+		}
+	}
 
   
     const patchLike = async () => {
@@ -84,8 +123,9 @@ const PostWidget: FC<IPost> = ({
       }
     };
 
-	const disabledCommentButton = data ? !data?.data?.hasMore : false;
-  
+
+	const disabledCommentButton = !commentCount ? true : false;
+
     return (
 		<WidgetWrapper m="2rem 0">
 			<Friend
@@ -122,7 +162,7 @@ const PostWidget: FC<IPost> = ({
 					<FlexBetween gap="0.3rem">
 						<IconButton 
 							onClick={
-								handleUpdateCommentList
+								() => { handleCommentClick()}
 							}
 							disabled={disabledCommentButton}
 						>
@@ -132,24 +172,38 @@ const PostWidget: FC<IPost> = ({
 					</FlexBetween>
 				</FlexBetween>
 	
-				<IconButton>
-					<ShareOutlined />
-				</IconButton>
+				{isShowDeleteButton && <IconButton
+					onClick={handleDeletePost}
+					disabled={isDeleteLoading}
+				>
+					<DeleteOutlineIcon/>
+				</IconButton>}
 			</FlexBetween>
-			{comments && comments.length > 0 && (
-				<Box mt="0.5rem">
-					{comments.map((comment: IComment, i) => (
-						<Box key={comment.id}>
-							<Divider />
-							<Comment
-								url={comment.user.photo?.url || ""}
-								comment={comment.text}
-								fullName={`${comment.user.firstName} ${comment.user.lastName}`}
-								createdAt={comment.createdAt}
-							/>
-						</Box>
-					))}
-				</Box>
+			{isComments && (
+				 <CustomScroll
+					maxHeight="250px"
+					ref={ref}
+					onScroll={handleScroll}
+				>
+					<Box
+						mt="0.5rem"
+						pr={hasScroll ? '16px' : '0px'}
+					>
+						{comments && comments.length > 0 && comments.map((comment: IComment, i) => (
+							<Box key={comment.id}>
+								<Divider />
+								<Comment
+									comment={comment}
+								/>
+							</Box>
+						))}
+						{isFetching && (
+							<Box display="flex" justifyContent="center" py="1rem">
+								<CircularProgress size={20} />
+							</Box>
+						)}
+					</Box>
+				</CustomScroll>
 			)} 
 			<Divider sx={{ margin: "1.25rem 0" }} />
 			<CommentInput postId={String(id)}/>

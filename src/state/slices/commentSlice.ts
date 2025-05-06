@@ -26,10 +26,20 @@ const commentSlice = createSlice({
         setComments: (state, { payload}: PayloadAction<{comments: IComment[], postId: number}>) => {
             state.list[payload.postId] = [...(state.list[payload.postId] || []), ...payload.comments]
         }, 
+        updateCommet: (state,{ payload }: PayloadAction<{comment: IComment}>) => {
+            const updatedComment = payload.comment;
+            const postId = updatedComment.post.id;
+            
+            const comments = state.list[postId];
+            if (!comments) return;
+            state.list[postId] = comments.map((comment) => 
+                comment.id === updatedComment.id ? updatedComment : comment
+            )
+        }
 
     }
 });
 
-export const { setComments, setComment } = commentSlice.actions;
+export const { setComments, setComment, updateCommet } = commentSlice.actions;
 
 export default commentSlice.reducer;

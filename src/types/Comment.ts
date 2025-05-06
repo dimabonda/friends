@@ -1,3 +1,5 @@
+import { ILike } from "@/types/Like";
+
 export interface IComment {
     id: number,
     text: string,
@@ -13,5 +15,6 @@ export interface IComment {
     },
     post: {
         id: number,
-    }
+    },
+    likes: ILike[],
 }
