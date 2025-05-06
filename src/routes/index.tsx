@@ -1,13 +1,13 @@
 import { RouteObject, Outlet, Navigate } from 'react-router-dom';
-import paths from 'paths';
-import Login from 'pages/login';
-import Register from 'pages/register';
-import Profile from 'pages/profile';
-import Home from 'pages/home';
-import NotFound from 'pages/404';
-import ProfileDetails from 'pages/profile/details';
-import Layout from 'pages/layout';
-import { checkTokenValidity } from 'utils/authUtils';
+import paths from '@/paths';
+import Login from '@/pages/login';
+import Register from '@/pages/register';
+import Profile from '@/pages/profile';
+import Home from '@/pages/home';
+import NotFound from '@/pages/404';
+import ProfileDetails from '@/pages/profile/details';
+import Layout from '@/pages/layout';
+import { checkTokenValidity } from '@/utils/authUtils';
 import { ProtectedRoute } from './ProtectedRoute';
 
 

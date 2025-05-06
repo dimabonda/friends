@@ -1,4 +1,4 @@
-import { IFriend } from "types/Friend";
+import { IFriend } from "@/types/Friend";
 
 export interface IUser {
     id: number;

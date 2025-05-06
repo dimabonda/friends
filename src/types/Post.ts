@@ -1,5 +1,5 @@
-import { IComment } from "types/Comment";
-import { ILike } from "types/Like";
+import { IComment } from "@/types/Comment";
+import { ILike } from "@/types/Like";
 export interface IPost {
     id: number,
     title: string,
@@ -19,5 +19,6 @@ export interface IPost {
         url: string
     },
     likes: ILike[],
-    comments: IComment[]
+    commentCount: string,
+    // comments: IComment[]
 }

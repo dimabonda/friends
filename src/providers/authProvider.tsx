@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
 import { useEffect } from "react";
-import paths from "paths";
+import paths from "@/paths";
 import { useNavigate, useLocation } from "react-router-dom";
-import { checkTokenValidity } from "utils/authUtils";
-import { useMeQuery } from "state/api/userApi";
+import { checkTokenValidity } from "@/utils/authUtils";
+import { useMeQuery } from "@/state/api/userApi";
 
 export interface UserProviderProps {
     children: React.ReactNode;

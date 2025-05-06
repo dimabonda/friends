@@ -1,8 +1,8 @@
 import { FC, ReactNode, useEffect, useState } from "react";
-import NavBar from "components/NavBar";
+import NavBar from "@/components/NavBar";
 import { Navigate } from "react-router-dom";
-import { checkTokenValidity } from "utils/authUtils";
-import paths from "paths";
+import { checkTokenValidity } from "@/utils/authUtils";
+import paths from "@/paths";
 // import { UserProvider } from 'providers/userProvider';
 
 interface LayoutProps {
