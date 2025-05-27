@@ -13,14 +13,12 @@ interface IPostsWidget {
 }
 
 const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
-  	const dispatch = useDispatch();
 	const token = useSelector((state: RootState) => state.auth.token);
 
 	const posts = useSelector((state: RootState) => state.post.list);
 	
 	const [ lastPostId, setLastPostId ] = useState<number | null>(null);
 
-	const containerRef = useRef<HTMLDivElement | null>(null);
 	// console.log("posts", posts)
 	// const {
 	//   data: userPosts,
@@ -34,8 +32,6 @@ const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
 	const handleUpdatePostList = () => {
 		setLastPostId(posts.length > 0 ? posts[posts.length-1].id : null)
 	}
-	
-	
 
 	const {
 		data: allPostsData,
@@ -54,21 +50,8 @@ const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
 		offset: 20,
 	});
 
-	const disabled = !allPostsData?.data?.hasMore;
-
 	return (
-		<Box
-		// 	onScroll={(e) => {
-		// 		console.log("scrolling");
-		// 		const target = e.target as HTMLElement;
-		// 		const scrollBottom = target.scrollHeight - target.scrollTop - target.clientHeight;
-			
-		// 		if (scrollBottom < 10 && allPostsData?.data?.hasMore && !isFetching) {
-		// 			handleUpdatePostList();
-		// 		}
-		//   }}
-		  
-		>
+		<Box>
 			{posts.map(
 				({
 					id,
@@ -78,6 +61,7 @@ const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
 					image,
 					likes,
 					commentCount,
+    				isFriend,
 				}) => (
 					<PostWidget
 						key={id}
@@ -88,6 +72,7 @@ const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
 						title={title}
 						likes={likes}
 						commentCount={commentCount}
+						isFriend={isFriend}
 					/>
 				)
 			)}

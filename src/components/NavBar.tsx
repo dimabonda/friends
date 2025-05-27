@@ -30,6 +30,7 @@ import { useNavigate } from "react-router-dom";
 import { toggleMode } from "@/state/slices/themeSlice";
 import { logout } from "@/state/slices/authSlice";
 import paths from "@/paths";
+import { resetStateAction } from "@/state/store";
 
 interface NavBarProps {
 
@@ -51,7 +52,7 @@ const NavBar:FC<NavBarProps> = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
-        dispatch(logout());
+        dispatch(resetStateAction());
         navigate(paths.auth.login);
     };
 

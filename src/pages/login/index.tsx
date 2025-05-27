@@ -10,9 +10,11 @@ import { IUser } from "@/types/User";
 import { IAuthError } from "@/types/Errors";
 
 import { useToast } from "@/hooks/useToast";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from '@/state/store'
 
 interface ILoginResponse {
-    jwt: string;
+    jwt?: string;
     user: IUser;
 }
 
@@ -22,6 +24,7 @@ const validationSchema = yup.object({
 });
 
 const Login:FC = () => {
+    const auth = useSelector((state: RootState) => state.auth);
     const theme = useTheme();
     const { palette } = useTheme();
     const navigate = useNavigate();
@@ -47,11 +50,18 @@ const Login:FC = () => {
                     password: values.password,
                 };
                 const response: ILoginResponse = await login(requestBody).unwrap();
-                if(response && response.jwt && response.user){
+                const user = response.user;
+                if(user && response.jwt && user.confirmed){
                     localStorage.setItem('accessToken', response.jwt);
                     navigate(paths.home);
+                } else if (user && user.email && !user.confirmed) {
+                    navigate('/confirmation', {
+                        state: {
+                          email: user.email,
+                          type: 'register',
+                        },
+                    });
                 }
-
                 handleResetForm()
             } catch (err) {
                 const error = err as IAuthError;

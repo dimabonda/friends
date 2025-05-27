@@ -66,7 +66,6 @@ const Register:FC = () => {
         // validateOnBlur: false,
         onSubmit: async (values, helpers): Promise<void> => {
             try {
-
                 const formData = new FormData();
                 formData.append("firstName", values.firstName);
                 formData.append("lastName", values.lastName);
@@ -78,9 +77,13 @@ const Register:FC = () => {
                     formData.append("photo", values.photo);
                 }
                 const response = await register(formData).unwrap();
-                if(response && response.jwt && response.user){
-                    localStorage.setItem('accessToken', response.jwt); 
-                    navigate(paths.home);
+                if(response && response.user && response.user.email){
+                    navigate('/confirmation', {
+                        state: {
+                          email: response.user.email,
+                          type: 'register',
+                        },
+                    });
                 }
                 
                 showToast(response.message, 'success');

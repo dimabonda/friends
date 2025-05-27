@@ -1,7 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IUser } from '@/types/User';
-import { IFriend } from '@/types/Friend';
-import { setCredentials, updateUserFriends } from '@/state/slices/authSlice';
+import { IFriend, IFriendListItem } from '@/types/Friend';
+import { logout, setCredentials, updateUserFriends } from '@/state/slices/authSlice';
+import { updatePostsIsFriend } from '@/state/slices/postSlice';
+import { setFriends } from '@/state/slices/friendsSlice';
+import { updateFriendsList } from '@/state/slices/friendsSlice';
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -16,8 +19,26 @@ interface IFollowRequest {
 
 interface IFollowResponse {
     message: string;
-    friend: IFriend;
+    friend: IFriendListItem;
     isFriend: boolean;
+}
+
+interface IFriendsListRequest {
+    lastCursor: number | null;
+    pageSize: number;
+    userId: number;
+}
+
+interface IFriendsListResponse {
+    hasMore: boolean;
+    friends: IFriendListItem[];
+}
+
+interface IGetUserProfileRequest {
+    userId: string;
+}
+interface IGetUserProfileResponse {
+    user: IUser;
 }
 
 export const userApi = createApi({
@@ -46,6 +67,7 @@ export const userApi = createApi({
                     dispatch(setCredentials({token: data.jwt, user: data.user}));
                 } catch (err) {
                     console.error('Error fetching user:', err);
+                    dispatch(logout());
                 }
             },
         }),
@@ -57,13 +79,42 @@ export const userApi = createApi({
             onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
-                    dispatch(updateUserFriends({isFriend: data.isFriend, friend: data.friend}))
+                    dispatch(updateUserFriends({isFriend: data.isFriend}))
+                    dispatch(updatePostsIsFriend({isFriend: data.isFriend, friendId: data.friend.id}))
+                    dispatch(updateFriendsList({friend: data.friend, isFriend: data.isFriend}));
                 } catch (err) {
                     console.error('Error updating user:', err);
                 }
             },
-        })
+        }),
+        getFriendsList: builder.query<IFriendsListResponse, IFriendsListRequest>({
+            query: ({lastCursor, pageSize, userId}) => {
+                let url = `api/user/${userId}/friends?pageSize=${pageSize}`
+                if (lastCursor) {
+                    url = `${url}&lastCursor=${lastCursor}`;
+                }
+                return {
+                    url,
+                    method: "GET",
+                }
+            },
+            onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+                try {
+                    const { data } = await queryFulfilled;
+                    const friends = data.friends;
+                    dispatch(setFriends({friends}));
+                } catch (err) {
+                    console.error('Error fetching post list:', err);
+                }
+            },
+        }),
+        getUserProfile: builder.query<IGetUserProfileResponse, IGetUserProfileRequest>({
+            query: ({userId}) => ({
+                url: `/api/user/${userId}/profile`,
+                method: 'GET',
+            }),
+        }),     
     })
 })
 
-export const { useMeQuery, useFollowMutation } = userApi;
+export const { useMeQuery, useFollowMutation, useGetFriendsListQuery, useGetUserProfileQuery } = userApi;

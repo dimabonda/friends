@@ -38,6 +38,7 @@ const PostWidget: FC<IPost> = ({
     likes,
     createdAt,
     commentCount,
+	isFriend,
 }) => {
 	
 	const { palette } = useTheme();
@@ -127,12 +128,14 @@ const PostWidget: FC<IPost> = ({
 	const disabledCommentButton = !commentCount ? true : false;
 
     return (
-		<WidgetWrapper m="2rem 0">
+		<WidgetWrapper m="0 0 2rem">
 			<Friend
 				friendId={user.id.toString()}
 				name={userFullName}
 				subtitle={user?.location || ""}
 				userPhoto={user?.photo?.url || ""}
+				isFriend={isFriend}
+				canModifyFriendsList={true}
 			/>
 			{image?.url && (
 				<img

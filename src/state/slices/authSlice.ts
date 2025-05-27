@@ -28,13 +28,13 @@ const authSlice = createSlice({
             state.token = null;
             state.user = null;
             state.isAuthenticated = false;
-        }, 
-        updateUserFriends: (state, {payload}: PayloadAction<{isFriend: boolean, friend: IFriend}>) => {
+        },
+        updateUserFriends: (state, {payload}: PayloadAction<{isFriend: boolean}>) => {
             if (state.user){
                 if (payload.isFriend){
-                    state.user.friends = [...state.user.friends, {id: payload.friend.id, username: payload.friend.username}]
+                    state.user.friendsCount = (state.user.friendsCount || 0) + 1;
                 } else {
-                    state.user.friends = state.user.friends.filter(friend => friend.id !== payload.friend.id)
+                    state.user.friendsCount = Math.max((state.user.friendsCount || 1) - 1, 0);
                 }
             }
         }

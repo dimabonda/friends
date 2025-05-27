@@ -1,5 +1,3 @@
-import { IFriend } from "@/types/Friend";
-
 export interface IUser {
     id: number;
     username: string;
@@ -12,5 +10,5 @@ export interface IUser {
     blocked: boolean,
     role: object,
     photo: {url: string},
-    friends: IFriend[],
+    friendsCount: number,
 }
