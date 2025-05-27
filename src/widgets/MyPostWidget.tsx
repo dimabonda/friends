@@ -62,125 +62,127 @@ const MyPostWidget = ({ photo }: any) => {
     };
 
     return (
-		<WidgetWrapper>
-			<FlexBetween gap="1.5rem">
-				{photo && <UserImage image={photo} />}
-				<InputBase
-					placeholder="What's on your mind..."
-					onChange={(e) => setPost(e.target.value)}
-					value={post}
-					onKeyDown={(e) => {
-						if (e.key === "Enter" && !e.shiftKey) { 
-							handlePost();
-						}
-					}}
-					sx={{
-						width: "100%",
-						backgroundColor: palette.neutral.light,
-						borderRadius: "2rem",
-						padding: "1rem 2rem",
-					}}
-				/>
-			</FlexBetween>
-			{isImage && (
-				<Box
-					border={`1px solid ${medium}`}
-					borderRadius="5px"
-					mt="1rem"
-					p="1rem"
-				>
-					<Dropzone
-						accept={{
-							"image/jpeg": [],
-							"image/png": [],
-							"image/jpg": []
+		<Box mb="2rem">
+			<WidgetWrapper >
+				<FlexBetween gap="1.5rem">
+					{photo && <UserImage image={photo} />}
+					<InputBase
+						placeholder="What's on your mind..."
+						onChange={(e) => setPost(e.target.value)}
+						value={post}
+						onKeyDown={(e) => {
+							if (e.key === "Enter" && !e.shiftKey) { 
+								handlePost();
+							}
 						}}
-					multiple={false}
-					onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+						sx={{
+							width: "100%",
+							backgroundColor: palette.neutral.light,
+							borderRadius: "2rem",
+							padding: "1rem 2rem",
+						}}
+					/>
+				</FlexBetween>
+				{isImage && (
+					<Box
+						border={`1px solid ${medium}`}
+						borderRadius="5px"
+						mt="1rem"
+						p="1rem"
 					>
-					{({ getRootProps, getInputProps }) => (
-						<FlexBetween>
-						<Box
-							{...getRootProps()}
-							border={`2px dashed ${palette.primary.main}`}
-							p="1rem"
-							width="100%"
-							sx={{ "&:hover": { cursor: "pointer" } }}
+						<Dropzone
+							accept={{
+								"image/jpeg": [],
+								"image/png": [],
+								"image/jpg": []
+							}}
+						multiple={false}
+						onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
 						>
-							<input {...getInputProps()} />
-							{!image ? (
-							<p>Add Image Here</p>
-							) : (
+						{({ getRootProps, getInputProps }) => (
 							<FlexBetween>
-								<Typography>{image.name}</Typography>
-								<EditOutlined />
-							</FlexBetween>
-							)}
-						</Box>
-						{image && (
-							<IconButton
-								onClick={() => setImage(null)}
-								sx={{ width: "15%" }}
+							<Box
+								{...getRootProps()}
+								border={`2px dashed ${palette.primary.main}`}
+								p="1rem"
+								width="100%"
+								sx={{ "&:hover": { cursor: "pointer" } }}
 							>
-							<DeleteOutlined />
-							</IconButton>
+								<input {...getInputProps()} />
+								{!image ? (
+								<p>Add Image Here</p>
+								) : (
+								<FlexBetween>
+									<Typography>{image.name}</Typography>
+									<EditOutlined />
+								</FlexBetween>
+								)}
+							</Box>
+							{image && (
+								<IconButton
+									onClick={() => setImage(null)}
+									sx={{ width: "15%" }}
+								>
+								<DeleteOutlined />
+								</IconButton>
+							)}
+							</FlexBetween>
 						)}
+						</Dropzone>
+					</Box>
+				)}
+		
+				<Divider sx={{ margin: "1.25rem 0" }} />
+		
+				<FlexBetween>
+					<FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
+						<ImageOutlined sx={{ color: mediumMain }} />
+						<Typography
+							color={mediumMain}
+							sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+						>
+							Image
+						</Typography>
+					</FlexBetween>
+		
+					{isNonMobileScreens ? (
+						<>
+							<FlexBetween gap="0.25rem">
+								<GifBoxOutlined sx={{ color: mediumMain }} />
+								<Typography color={mediumMain}>Clip</Typography>
+							</FlexBetween>
+				
+							<FlexBetween gap="0.25rem">
+								<AttachFileOutlined sx={{ color: mediumMain }} />
+								<Typography color={mediumMain}>Attachment</Typography>
+							</FlexBetween>
+				
+							<FlexBetween gap="0.25rem">
+								<MicOutlined sx={{ color: mediumMain }} />
+								<Typography color={mediumMain}>Audio</Typography>
+							</FlexBetween>
+						</>
+					) : (
+						<FlexBetween gap="0.25rem">
+							<MoreHorizOutlined sx={{ color: mediumMain }} />
 						</FlexBetween>
 					)}
-					</Dropzone>
-				</Box>
-			)}
-	
-			<Divider sx={{ margin: "1.25rem 0" }} />
-	
-			<FlexBetween>
-				<FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
-					<ImageOutlined sx={{ color: mediumMain }} />
-					<Typography
-						color={mediumMain}
-						sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+		
+					<Button
+						disabled={!post || isLoading}
+						onClick={handlePost}
+						sx={{
+						color: palette.background.alt,
+						backgroundColor: palette.primary.main,
+						borderRadius: "3rem",
+						cursor: 'pointer',
+						}}
 					>
-						Image
-					</Typography>
+						POST
+					</Button>
 				</FlexBetween>
-	
-				{isNonMobileScreens ? (
-					<>
-						<FlexBetween gap="0.25rem">
-							<GifBoxOutlined sx={{ color: mediumMain }} />
-							<Typography color={mediumMain}>Clip</Typography>
-						</FlexBetween>
-			
-						<FlexBetween gap="0.25rem">
-							<AttachFileOutlined sx={{ color: mediumMain }} />
-							<Typography color={mediumMain}>Attachment</Typography>
-						</FlexBetween>
-			
-						<FlexBetween gap="0.25rem">
-							<MicOutlined sx={{ color: mediumMain }} />
-							<Typography color={mediumMain}>Audio</Typography>
-						</FlexBetween>
-					</>
-				) : (
-					<FlexBetween gap="0.25rem">
-						<MoreHorizOutlined sx={{ color: mediumMain }} />
-					</FlexBetween>
-				)}
-	
-				<Button
-					disabled={!post || isLoading}
-					onClick={handlePost}
-					sx={{
-					color: palette.background.alt,
-					backgroundColor: palette.primary.main,
-					borderRadius: "3rem",
-					cursor: 'pointer',
-					}}
-				>
-					POST
-				</Button>
-			</FlexBetween>
-		</WidgetWrapper>
+			</WidgetWrapper>
+		</Box>
     );
 };
   

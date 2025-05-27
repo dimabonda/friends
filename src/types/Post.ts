@@ -20,5 +20,6 @@ export interface IPost {
     },
     likes: ILike[],
     commentCount: string,
+    isFriend: boolean,
     // comments: IComment[]
 }

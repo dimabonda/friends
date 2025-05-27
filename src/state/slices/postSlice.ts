@@ -31,10 +31,17 @@ const postSlice = createSlice({
         },
         incrementCommentCount: (state, {payload}: PayloadAction<{postId: number}>) => {
             state.list = state.list.map((post: IPost) => post.id === payload.postId ? ({...post, commentCount: post.commentCount + 1}) : post)
+        },
+        updatePostsIsFriend: (state, { payload }: PayloadAction<{ friendId: number; isFriend: boolean }>) => {
+            state.list = state.list.map(post =>
+                post.user.id === payload.friendId
+                ? { ...post, isFriend: payload.isFriend }
+                : post
+            );
         }
     }
 });
 
-export const { setPost, setPosts, updatePost, deletePost, incrementCommentCount } = postSlice.actions;
+export const { setPost, setPosts, updatePost, deletePost, incrementCommentCount, updatePostsIsFriend } = postSlice.actions;
 
 export default postSlice.reducer;

@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { IUser } from "@/types/User";
+import { RootState } from "@/state/store";
 
 interface UserWidgetProps {
 	user: IUser
@@ -20,20 +21,23 @@ interface UserWidgetProps {
 const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 	const { palette } = useTheme();
 	const navigate = useNavigate();
-	const token = useSelector((state: any) => state.token);
+	const { token, user: me} = useSelector((state: RootState) => state.auth);
 	const dark = palette.neutral.dark;
 	const medium = palette.neutral.medium;
 	const main = palette.neutral.main;
 
 	const {
+		id,
 		firstName,
 		lastName,
 		location,
 		occupation,
 		// viewedProfile,
 		// impressions,
-		friends,
+		friendsCount,
 	} = user;
+
+	const isCurrentUser = me?.id === id;
 
 	const handleOpenProfile = () => {
 		// navigate(`/profile/${user._id}`);
@@ -65,10 +69,10 @@ const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 						>
 							{firstName} {lastName}
 						</Typography>
-						<Typography color={medium}>{friends?.length} {friends?.length > 1 ? "friends" : "friend"}</Typography> 
+						<Typography color={medium}>{friendsCount || 0} {friendsCount > 1 ? "friends" : "friend"}</Typography> 
 					</Box>
 				</FlexBetween>
-				<ManageAccountsOutlined />
+				{isCurrentUser && <ManageAccountsOutlined />}
 			</FlexBetween>
 
 			<Divider />
@@ -113,7 +117,7 @@ const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 
 				<FlexBetween gap="1rem" mb="0.5rem">
 				<FlexBetween gap="1rem">
-					<img src="assets/twitter.png" alt="twitter" />
+					<img src="/assets/twitter.png" alt="twitter" />
 					<Box>
 						<Typography color={main} fontWeight="500">
 							Twitter
@@ -121,7 +125,7 @@ const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 						<Typography color={medium}>Social Network</Typography>
 					</Box>
 				</FlexBetween>
-				<EditOutlined sx={{ color: main }} />
+				{isCurrentUser && <EditOutlined sx={{ color: main }} />}
 				</FlexBetween>
 
 				<FlexBetween gap="1rem">
@@ -134,7 +138,7 @@ const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 							<Typography color={medium}>Network Platform</Typography>
 						</Box>
 					</FlexBetween>
-					<EditOutlined sx={{ color: main }} />
+					{isCurrentUser && <EditOutlined sx={{ color: main }} />}
 				</FlexBetween>
 			</Box>
 		</WidgetWrapper>
