@@ -20,14 +20,14 @@ interface IFriendProps {
 	name: string;
 	subtitle: string;
 	userPhoto: string;
+	isFriend: boolean;
+	canModifyFriendsList: boolean;
 }
 
-const Friend: FC<IFriendProps> = ({ friendId, name, subtitle, userPhoto }) => {
+const Friend: FC<IFriendProps> = ({ friendId, name, subtitle, userPhoto, isFriend, canModifyFriendsList }) => {
 	const navigate = useNavigate();
 	const user = useSelector((state: RootState) => state.auth.user);
-	const friendIds = new Set(user?.friends?.map((friend: IFriend ) => friend.id))
 	const isCurrentUser = friendId === user?.id?.toString();
-	const isFriend = friendId ? friendIds.has(Number(friendId)) : false;
 
 	const { palette } = useTheme();
 	const [ follow, { isLoading} ] = useFollowMutation()
@@ -52,11 +52,21 @@ const Friend: FC<IFriendProps> = ({ friendId, name, subtitle, userPhoto }) => {
 	return (
 		<FlexBetween>
 			<FlexBetween gap="1rem">
-				<UserImage image={userPhoto} size="55px" />
+				<UserImage 
+					image={userPhoto} 
+					size="55px"
+					onClick={() => {
+						navigate(`/profile/${friendId}`);
+						// navigate(0);
+					}}
+				/>
 				<Box
 					onClick={() => {
 						navigate(`/profile/${friendId}`);
-						navigate(0);
+						// navigate(0);
+					}}
+					sx={{
+						cursor: "pointer",
 					}}
 				>
 					<Typography
@@ -66,7 +76,6 @@ const Friend: FC<IFriendProps> = ({ friendId, name, subtitle, userPhoto }) => {
 						sx={{
 							"&:hover": {
 								color: palette.primary.light,
-								cursor: "pointer",
 							},
 						}}
 					>
@@ -77,7 +86,7 @@ const Friend: FC<IFriendProps> = ({ friendId, name, subtitle, userPhoto }) => {
 					</Typography>
 				</Box>
 			</FlexBetween>
-			{!isCurrentUser && 
+			{canModifyFriendsList && (!isCurrentUser && 
 				<IconButton
 					disabled={isLoading}
 					onClick={() => patchFriend()}
@@ -88,7 +97,7 @@ const Friend: FC<IFriendProps> = ({ friendId, name, subtitle, userPhoto }) => {
 					) : (
 						<PersonAddOutlined sx={{ color: primaryDark }} />
 					)}
-				</IconButton>
+				</IconButton>)
 		 	}
 		</FlexBetween>
 	);

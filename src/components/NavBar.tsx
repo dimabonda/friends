@@ -30,6 +30,8 @@ import { useNavigate } from "react-router-dom";
 import { toggleMode } from "@/state/slices/themeSlice";
 import { logout } from "@/state/slices/authSlice";
 import paths from "@/paths";
+import { resetStateAction } from "@/state/store";
+import { SearchNav } from "@/components/SearchNav";
 
 interface NavBarProps {
 
@@ -51,7 +53,7 @@ const NavBar:FC<NavBarProps> = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
-        dispatch(logout());
+        dispatch(resetStateAction());
         navigate(paths.auth.login);
     };
 
@@ -62,7 +64,12 @@ const NavBar:FC<NavBarProps> = () => {
     }
 
     return (
-        <FlexBetween padding="1rem 6%" sx={{ backgroundColor: alt }}>
+        <FlexBetween padding="1rem 6%" sx={{ 
+            backgroundColor: alt,
+            position: "sticky",
+            top: 0,
+            zIndex: 100,
+        }}>
             <FlexBetween gap="1.75rem">
                 <Typography
                     fontWeight="bold"
@@ -79,19 +86,21 @@ const NavBar:FC<NavBarProps> = () => {
                     Friends
                 </Typography>
                 {isNotMobileScreen && (
-                    <FlexBetween
-                        sx={{
-                            backgroundColor: neutralLight
-                        }}
-                        borderRadius="9px"
-                        gap="3rem"
-                        padding="0.1rem 1.5rem"
-                    >
-                        <InputBase placeholder="Search..." />
-                        <IconButton>
-                            <Search />
-                        </IconButton>
-                    </FlexBetween>
+                    <SearchNav/>
+                    // <FlexBetween
+                    //     sx={{
+                    //         backgroundColor: neutralLight,
+                    //         minWidth: "350px",
+                    //     }}
+                    //     borderRadius="9px"
+                    //     gap="2rem"
+                    //     padding="0.1rem 1.5rem"
+                    // >
+                    //     <InputBase placeholder="Search..." />
+                    //     <IconButton>
+                    //         <Search />
+                    //     </IconButton>
+                    // </FlexBetween>
                 )}
             </FlexBetween>
 
@@ -117,11 +126,11 @@ const NavBar:FC<NavBarProps> = () => {
                                 borderRadius: "0.25rem",
                                 p: "0.25rem 1rem",
                                 "& .MuiSvgIcon-root": {
-                                pr: "0.25rem",
-                                width: "3rem",
+                                    pr: "0.25rem",
+                                    width: "3rem",
                                 },
                                 "& .MuiSelect-select:focus": {
-                                backgroundColor: neutralLight,
+                                    
                                 },
                             }}
                             input={<InputBase />}

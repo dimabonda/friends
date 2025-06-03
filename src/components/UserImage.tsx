@@ -5,12 +5,20 @@ const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL || "";
 interface IUserImageProps {
     image: string;
 	size?: string;
+	onClick?: () => void;
 }
 
-const UserImage: FC<IUserImageProps> = ({ image, size = "60px" }) => {
+const UserImage: FC<IUserImageProps> = ({ image, size = "60px", onClick}) => {
 	const imageUrl = `${BASE_URL}${image}`;
 	return (
-		<Box>
+		<Box
+			onClick={
+				onClick
+			}
+			sx={{
+				cursor: onClick ? 'pointer' : 'auto'
+			}}
+		>
 			<Avatar 
 				sx={{
 					width: size,

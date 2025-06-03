@@ -11,14 +11,32 @@ interface ILoginRequest {
 }
 
 interface ILoginResponse {
-    jwt: string;
+    jwt?: string;
     user: IUser;
 }
 
 interface IRegisterResponse {
+    user: IUser;
+    message: string;
+}
+
+interface IConfirmUserRequest {
+    email: string;
+    pin: string;
+}
+
+interface IConfirmUserResponse {
     jwt: string;
     user: IUser;
     message: string;
+}
+
+interface ISentPinRequest {
+    email: string;
+}
+
+interface ISentPinResponse {
+    message: "string";
 }
 
 export const authApi = createApi({
@@ -33,18 +51,27 @@ export const authApi = createApi({
                 method: 'POST',
                 body: data,
             }),
+        }),
+        login: builder.mutation<ILoginResponse, ILoginRequest>({
+            query: (data) => ({
+                url: '/api/auth/local/login',
+                method: 'POST',
+                body: data,
+            }),
             onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
-                    dispatch(setCredentials({token: data.jwt, user: data.user}));
+                    if(data && data.user && data.jwt){
+                        dispatch(setCredentials({token: data.jwt, user: data.user}));
+                    }
                 } catch (err) {
                     console.error('Error fetching user:', err);
                 }
             },
         }),
-        login: builder.mutation<ILoginResponse, ILoginRequest>({
+        confirmUser: builder.mutation<IConfirmUserResponse, IConfirmUserRequest>({
             query: (data) => ({
-                url: '/api/auth/local/login',
+                url: '/api/auth/pin-submit',
                 method: 'POST',
                 body: data,
             }),
@@ -57,7 +84,20 @@ export const authApi = createApi({
                 }
             },
         }),
+        sentPin: builder.mutation<ISentPinResponse, ISentPinRequest>({
+            query: (data) => ({
+                url: '/api/auth/pin-request',
+                method: 'POST',
+                body: data,
+            })
+        })
+        
     })
 })
 
-export const { useRegisterMutation, useLoginMutation } = authApi;
+export const { 
+    useRegisterMutation,
+    useLoginMutation,
+    useConfirmUserMutation,
+    useSentPinMutation,
+} = authApi;

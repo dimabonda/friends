@@ -7,9 +7,7 @@ interface CommentsState {
 }
 
 const initialState: CommentsState = {
-    list: {
-        
-    }
+    list: {}
 }
 
 const commentSlice = createSlice({
