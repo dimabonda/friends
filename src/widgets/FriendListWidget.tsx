@@ -19,18 +19,25 @@ const FriendListWidget: FC<IFriendListWidget> = ({ userId }) => {
 	const { palette } = useTheme();
 	const { token, user} = useSelector((state: RootState) => state.auth);
 	const friends = useSelector((state: RootState) => state.friend.list);
+	// console.log('friends', friends);
 	const isCurrentUserFriendsList = userId === user?.id;
+
 	const { hasScroll, ref } = useHasVerticalScroll(friends?.length || 0);
 	const [ lastCursor, setLastCursor ] = useState<number | null>(null);
-	
+
 	const {
 		data,
 		isLoading,
 		isFetching,
 		isError,
 	} = useGetFriendsListQuery(
-		{ lastCursor, pageSize: 4, userId },
-		{ skip: !token || !userId}
+		{ lastCursor, pageSize: 5, userId },
+		{ 
+			skip: !token || !userId,
+			refetchOnMountOrArgChange: true,
+			refetchOnFocus: false,
+    		refetchOnReconnect: false,
+		}
 	);
 
 	const handleUpdateList = () => {
@@ -38,6 +45,7 @@ const FriendListWidget: FC<IFriendListWidget> = ({ userId }) => {
 	}
 
 	const handleScroll = (e: Event) => {
+		console.log('handleScroll', data?.hasMore);
 		const target = e.target as HTMLElement;
 				  
 		const scrollBottom = target.scrollHeight - target.scrollTop - target.clientHeight;
@@ -48,11 +56,10 @@ const FriendListWidget: FC<IFriendListWidget> = ({ userId }) => {
 	}
 
 	useEffect(() => {
-		if (isLoading || isFetching) return;
-		if (!hasScroll && data?.hasMore){
+		if (!hasScroll && data?.hasMore && !isFetching && friends.length == 4 ) {
 			handleUpdateList();
 		}
-	}, [hasScroll, data?.hasMore])
+	}, [hasScroll, data?.hasMore, isFetching, friends.length]);
 
 	return (
 		<WidgetWrapper>

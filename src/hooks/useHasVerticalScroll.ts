@@ -12,7 +12,6 @@ export const useHasVerticalScroll = (dependency: number) => {
       if (!scrollable) return;
 
       const hasVerticalScroll = scrollable.scrollHeight > scrollable.clientHeight;
-      console.log("hasVerticalScroll", hasVerticalScroll)
       setHasScroll(hasVerticalScroll);
     };
 

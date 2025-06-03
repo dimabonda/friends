@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IPost } from '@/types/Post';
-import { setPost, setPosts, updatePost, deletePost } from '@/state/slices/postSlice';
+import { setPost, setPosts, overwritePosts, updatePost, deletePost } from '@/state/slices/postSlice';
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -15,9 +15,9 @@ interface IPostListRequest {
 }
 
 interface IPostListByUserRequest{
-    page: number;
+    lastPostId: number | null;
     pageSize: number;
-    userId: string;
+    userId: number;
 }
 
 interface ILikePostRequest {
@@ -80,21 +80,38 @@ export const postApi = createApi({
                 url: `api/post/posts/list?lastPostId=${lastPostId}&pageSize=${pageSize}`,
                 method: "GET",
             }),
-            onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+            onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
                     const posts = data?.data?.posts;
-                    dispatch(setPosts({posts}));
+
+                    args.lastPostId === null
+                        ? dispatch(overwritePosts({ posts }))
+                        : dispatch(setPosts({ posts }))
+
                 } catch (err) {
                     console.error('Error fetching post list:', err);
                 }
             },
         }),
         getByUserList: builder.query<IPostListResponse, IPostListByUserRequest>({
-            query: ({page, pageSize, userId}) => ({
-                url: `api/post/${userId}/list?page=${page}&pageSize=${pageSize}`,
+            query: ({lastPostId, pageSize, userId}) => ({
+                url: `api/post-list/all?lastPostId=${lastPostId}&pageSize=${pageSize}&userId=${userId}`,
                 method: "GET",
-            })
+            }),
+             onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+                try {
+                    const { data } = await queryFulfilled;
+                    const posts = data?.data?.posts;
+
+                    args.lastPostId === null
+                        ? dispatch(overwritePosts({ posts }))
+                        : dispatch(setPosts({ posts }))
+
+                } catch (err) {
+                    console.error('Error fetching post list:', err);
+                }
+            },
         }),
         likePost: builder.mutation<IPostResponse, ILikePostRequest>({
             query: ({postId}) => ({
@@ -122,7 +139,6 @@ export const postApi = createApi({
             onQueryStarted: async (_, { dispatch, queryFulfilled }) => {    
                 try {
                     const { data } = await queryFulfilled;
-                    console.log("delete post", data);
                     const post = data?.data;
                     if (post && post.id){
                         dispatch(deletePost({postId: post.id}));

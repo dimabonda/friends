@@ -9,6 +9,7 @@ import authReducer from '@/state/slices/authSlice';
 import postReducer from '@/state/slices/postSlice';
 import commentReducer from '@/state/slices/commentSlice';
 import friendReducer from '@/state/slices/friendsSlice';
+import userReducer from '@/state/slices/userSlice';
 
 const appReducer = combineReducers({
     auth: authReducer,
@@ -16,6 +17,7 @@ const appReducer = combineReducers({
     comment: commentReducer,
     theme: themeReducer,
     friend: friendReducer,
+    users: userReducer,
     [authApi.reducerPath]: authApi.reducer,
     [postApi.reducerPath]: postApi.reducer,
     [userApi.reducerPath]: userApi.reducer,

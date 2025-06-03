@@ -9,39 +9,42 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import FlexBetween from "@/components/FlexBetween";
 
 interface IPostsWidget {
-  	userId?: string;
+  	userId?: number;
 }
 
 const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
+
 	const token = useSelector((state: RootState) => state.auth.token);
 
 	const posts = useSelector((state: RootState) => state.post.list);
 	
 	const [ lastPostId, setLastPostId ] = useState<number | null>(null);
-
-	// console.log("posts", posts)
-	// const {
-	//   data: userPosts,
-	//   isLoading: isUserLoading,
-	//   isError: isUserError
-	// } = useGetByUserListQuery(
-	//   { page, pageSize: 10, userId: userId! },
-	//   { skip: !token || !userId }
-	// );
-
+	
 	const handleUpdatePostList = () => {
-		setLastPostId(posts.length > 0 ? posts[posts.length-1].id : null)
+		setLastPostId(posts.length > 0 ? posts[posts.length-1]?.id : null)
 	}
+
+	const isLastPostReallyLast =
+		lastPostId !== null &&
+		posts.length > 0 &&
+		posts[posts.length - 1].id === lastPostId;
 
 	const {
 		data: allPostsData,
 		isLoading: isAllLoading,
 		isFetching,
-		isError: isAllError
-	} = useGetListQuery(
-		{ lastPostId, pageSize: 5 },
-		{ skip: !token || !!userId }
-	);
+		isError: isAllError,
+		refetch
+	} = 
+		useGetByUserListQuery(
+			{ lastPostId, pageSize: 5, userId: userId! },
+			{ 
+				skip: !token || (lastPostId !== null && !isLastPostReallyLast),
+				refetchOnMountOrArgChange: true,
+				refetchOnFocus: false,
+    			refetchOnReconnect: false,
+			}
+		)
 
 	useInfiniteScroll({
 		callback: handleUpdatePostList,
