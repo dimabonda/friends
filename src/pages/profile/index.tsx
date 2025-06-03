@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -21,7 +21,8 @@ const Profile:FC = () => {
 
     const {
         data,
-        isLoading
+        isLoading,
+        isFetching,
     } = useGetUserProfileQuery(
         { userId: id },
         { skip: !id }
@@ -29,14 +30,18 @@ const Profile:FC = () => {
 
     const user = data?.user;
 
+    if (!user?.id) {
+        return null;
+    }
+
     return (
         <Box>
             <Box
                 width="100%"
                 padding="2rem 6%"
                 display={isNonMobileScreens ? "flex" : "block"}
-                gap="0.5rem"
-                justifyContent="space-between"
+                gap="2rem"
+                justifyContent="center"
             >
                 <Box flexBasis={isNonMobileScreens ? "26%" : ""}>
                     {user && <UserWidget user={user} />}
@@ -45,15 +50,13 @@ const Profile:FC = () => {
                     flexBasis={isNonMobileScreens ? "42%" : ""}
                     mt={isNonMobileScreens ? "" : "2rem"}
                 >
-                    {/* <MyPostWidget photo={user?.photo?.url || ""} /> */}
-                    {/* <PostsWidget /> */}
+                    <PostsWidget userId={user?.id}/>
                 </Box>
-                {/* {isNonMobileScreens && (
+                {isNonMobileScreens && (
                     user && <Box flexBasis="26%">
-
                         <FriendListWidget userId={user?.id} />
                     </Box>
-                )} */}
+                )}
             </Box>
         </Box>
     )

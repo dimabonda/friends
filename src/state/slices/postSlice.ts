@@ -20,6 +20,9 @@ const postSlice = createSlice({
         setPosts: (state, { payload}: PayloadAction<{posts: IPost[]}>) => {
             state.list = [...state.list, ...payload.posts]
         }, 
+        overwritePosts: (state, { payload }: PayloadAction<{ posts: IPost[] }>) => {
+            state.list = payload.posts;
+        },
         updatePost: (state, {payload}: PayloadAction<{post: IPost}>) => {
             const index = state.list.findIndex((post: IPost) => post.id === payload.post.id)
             if(index !== -1){
@@ -42,6 +45,6 @@ const postSlice = createSlice({
     }
 });
 
-export const { setPost, setPosts, updatePost, deletePost, incrementCommentCount, updatePostsIsFriend } = postSlice.actions;
+export const { setPost, setPosts, overwritePosts, updatePost, deletePost, incrementCommentCount, updatePostsIsFriend } = postSlice.actions;
 
 export default postSlice.reducer;

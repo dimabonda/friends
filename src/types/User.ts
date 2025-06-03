@@ -12,3 +12,15 @@ export interface IUser {
     photo: {url: string},
     friendsCount: number,
 }
+
+export interface IUserListItem{
+    id: number;
+    firstName: string;
+    lastName: string;
+    location: string;
+    photo: {
+        url: string;
+    };
+    cursor: number;
+    isFriend: boolean;
+}
