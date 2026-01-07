@@ -3,22 +3,26 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { IFriendListItem } from "@/types/Friend";
 
 interface FriendState {
-    list: IFriendListItem[]
+    list: IFriendListItem[],
+    hasMore: boolean,
 }
 
 const initialState: FriendState = {
-    list: []
+    list: [],
+    hasMore: true,
 }
 
 const friendsSlice = createSlice({
     name: 'friend',
     initialState: initialState,
     reducers: {
-        setFriends: (state, { payload}: PayloadAction<{friends: IFriendListItem[]}>) => {
+        setFriends: (state, { payload}: PayloadAction<{friends: IFriendListItem[], hasMore: boolean}>) => {
             state.list = [...state.list, ...payload.friends]
+            state.hasMore = payload.hasMore;
         },
-        overwriteFriend: (state, { payload }: PayloadAction<{friends: IFriendListItem[]}>) => {
+        overwriteFriend: (state, { payload }: PayloadAction<{friends: IFriendListItem[],  hasMore: boolean}>) => {
             state.list = payload.friends;
+            state.hasMore = payload.hasMore;
         },
         updateFriendsList: (state, { payload }: PayloadAction<{ friend: IFriendListItem; isFriend: boolean }>) => {
             if (payload.isFriend){

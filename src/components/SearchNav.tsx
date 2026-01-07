@@ -29,15 +29,24 @@ import { overwriteUsers } from "@/state/slices/userSlice";
 export const SearchNav = () => {
     const theme = useTheme();
     const neutralLight = theme.palette.neutral.light;
+    const medium = theme.palette.neutral.medium;
+    const popoverShadow = theme.shadows[10];
     const dispatch = useDispatch();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [lastCursor, setLastCursor] = useState<number | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     const [query, setQuery] = useState("");
     const debouncedQuery = useDebounce(query, 500);
 
     const {list: users, count} = useSelector((state: RootState) => state.users);
+    const { hasScroll, ref } = useHasVerticalScroll(users?.length || 0);
 
+    const onFocus = () => setIsOpen(true);
+    const onBlur = () => setIsOpen(false);
+
+    // console.log("users from search", users);
+    // console.log("count from search", typeof count);
     const {
         data,
         isLoading,
@@ -50,6 +59,8 @@ export const SearchNav = () => {
     },{
         skip: !debouncedQuery,
         refetchOnMountOrArgChange: true,
+        refetchOnFocus: false,
+        refetchOnReconnect: false,
     })
 
     useEffect(()=> {
@@ -59,20 +70,31 @@ export const SearchNav = () => {
 
     }, [debouncedQuery])
 
-    console.log("users", users);
+    
+    const handleUpdateList = () => {
+		const newCursor = users.length > 0 ? users[users.length-1].id : null;
+		if (lastCursor !== newCursor) {
+			setLastCursor(newCursor);
+		}
+	}
 
-    const { hasScroll, ref } = useHasVerticalScroll(users?.length || 0);
+    const handleScroll = (e: Event) => {
+        const target = e.target as HTMLElement
+        const scrollBottom = target.scrollHeight - target.scrollTop - target.clientHeight;
 
-    const handleScroll = () => {
-        // Handle scroll logic here if needed
-        console.log('Scroll event triggered');
+        if (scrollBottom < 5 && !isFetching && data?.hasMore) {
+		  	handleUpdateList();
+		}
     }
 
     return (
         <Box 
             sx={{
                 position: "relative",
-                width: "350px"
+                width: "350px",
+                // "&:hover .user-widget": {
+                //     display: "block",
+                // }
             }}
         >
             <FlexBetween
@@ -91,18 +113,31 @@ export const SearchNav = () => {
                         setLastCursor(null);
                         setQuery(e.target.value);
                     }}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                 />
-                <IconButton>
-                    <Search />
-                </IconButton>
+                <Box display="flex" alignItems="center" gap="0.5rem">
+                    {!!count && count > 0 &&  <Typography color={medium} fontWeight="500">
+                        {count}
+                    </Typography>}
+                    <IconButton>
+                        <Search />
+                    </IconButton>
+                </Box>
+                
             </FlexBetween>
-           {users.length > 0 && <WidgetWrapper 
+           {isOpen && <WidgetWrapper 
                 sx={{
                     position: "absolute",
                     maxWidth: "100%",
                     minWidth: "100%",
                     top: "70px",
+                    boxShadow: popoverShadow,
                 }}
+                onMouseDown={(e) => {
+                    e.preventDefault();
+                }}
+                className="user-widget"
             >
                <CustomScroll
                     maxHeight="300px"
@@ -115,11 +150,12 @@ export const SearchNav = () => {
                         gap="1.5rem"
                         pr={hasScroll ? '16px' : '0px'}
                         sx={{
-                            height: "300px",
+                            minHeight: "55px",
+                            maxHeight: "300px",
                         }}
                     >
                         
-                        {users.map((user: IUserListItem) => (
+                        {users && users.length > 0 ? users.map((user: IUserListItem) => (
                             <Friend
                                 key={user.id.toString()}
                                 friendId={user.id.toString()}
@@ -129,7 +165,18 @@ export const SearchNav = () => {
                                 isFriend={user.isFriend || false}
                                 canModifyFriendsList={true}
                             />
-                        ))}
+                        )) : (
+                            <Box 
+                                display="flex" 
+                                justifyContent="center" 
+                                alignItems="center"
+                                flex="1"
+                            >
+                                <Typography color={medium} fontWeight="500">
+                                    {isLoading || isFetching ? "Loading..." : "No users found"}
+                                </Typography>
+                            </Box>)
+                        }
                     </Box>
                 </CustomScroll>
             </WidgetWrapper>}

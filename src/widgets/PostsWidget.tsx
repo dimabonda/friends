@@ -24,11 +24,6 @@ const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
 		setLastPostId(posts.length > 0 ? posts[posts.length-1]?.id : null)
 	}
 
-	const isLastPostReallyLast =
-		lastPostId !== null &&
-		posts.length > 0 &&
-		posts[posts.length - 1].id === lastPostId;
-
 	const {
 		data: allPostsData,
 		isLoading: isAllLoading,
@@ -37,9 +32,9 @@ const PostsWidget: FC<IPostsWidget> = ({ userId }) => {
 		refetch
 	} = 
 		useGetByUserListQuery(
-			{ lastPostId, pageSize: 5, userId: userId! },
+			{ lastPostId, pageSize: 5, userId: userId! || null },
 			{ 
-				skip: !token || (lastPostId !== null && !isLastPostReallyLast),
+				skip: !token,
 				refetchOnMountOrArgChange: true,
 				refetchOnFocus: false,
     			refetchOnReconnect: false,

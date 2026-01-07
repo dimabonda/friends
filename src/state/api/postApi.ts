@@ -17,7 +17,7 @@ interface IPostListRequest {
 interface IPostListByUserRequest{
     lastPostId: number | null;
     pageSize: number;
-    userId: number;
+    userId: number | null;
 }
 
 interface ILikePostRequest {
@@ -95,15 +95,23 @@ export const postApi = createApi({
             },
         }),
         getByUserList: builder.query<IPostListResponse, IPostListByUserRequest>({
-            query: ({lastPostId, pageSize, userId}) => ({
-                url: `api/post-list/all?lastPostId=${lastPostId}&pageSize=${pageSize}&userId=${userId}`,
-                method: "GET",
-            }),
+            query: ({lastPostId, pageSize, userId}) => {
+                let url = `api/post-list/all?pageSize=${pageSize}`;
+                if (lastPostId != null) {
+                    url += `&lastPostId=${lastPostId}`;
+                }
+                if (userId != null) {
+                    url += `&userId=${userId}`;
+                }
+                return {
+                    url,
+                    method: "GET",
+                }
+            },
              onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
                 try {
                     const { data } = await queryFulfilled;
                     const posts = data?.data?.posts;
-
                     args.lastPostId === null
                         ? dispatch(overwritePosts({ posts }))
                         : dispatch(setPosts({ posts }))

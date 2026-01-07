@@ -1,5 +1,5 @@
-
 import "@mui/material/styles";
+import { error } from "console";
 declare module "@mui/material/styles" {
     interface Palette {
         neutral: {
@@ -22,7 +22,7 @@ declare module "@mui/material/styles" {
     }
     interface TypeBackground {
         alt: string;
-      }
+    }
 }
 
 export const colorTokens = {
@@ -57,10 +57,11 @@ export const colorTokens = {
   
   // mui theme settings
   export const themeSettings = (mode: any) => {
+    const isDark = mode === "dark";
     return {
         palette: {
             mode: mode,
-            ...(mode === "dark"
+            ...(isDark
             ? {
                 // palette values for dark mode
                 primary: {
@@ -74,6 +75,7 @@ export const colorTokens = {
                     mediumMain: colorTokens.grey[300],
                     medium: colorTokens.grey[400],
                     light: colorTokens.grey[700],
+                    blue: 'rgba(0, 0, 255, 1)',
                 },
                 background: {
                     default: colorTokens.grey[900],
@@ -93,12 +95,18 @@ export const colorTokens = {
                     mediumMain: colorTokens.grey[400],
                     medium: colorTokens.grey[300],
                     light: colorTokens.grey[50],
+                    blue: 'rgba(0, 0, 255, 1)',
                 },
                 background: {
                     default: colorTokens.grey[10],
                     alt: colorTokens.grey[0],
                 },
             }),
+        },
+        customShadows:{
+            popover: isDark 
+                ? '0 16px 40px rgba(0,0,0,.55), 0 6px 20px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.07)' 
+                : '0 10px 30px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.10), 0 0 0 1px rgba(0,0,0,.06)'
         },
         typography: {
                 fontFamily: ["Rubik", "sans-serif"].join(","),

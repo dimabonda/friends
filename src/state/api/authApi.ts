@@ -39,6 +39,23 @@ interface ISentPinResponse {
     message: "string";
 }
 
+interface IResetPasswordRequest{
+    email: string;
+}
+
+interface IResetPasswordResponse{
+    message: string;
+}
+
+interface IConfirmResetPasswordPinRequest{
+    email: string;
+    pin: string;
+}
+
+interface IConfirmResetPasswordPinResponse{
+    data: any
+}
+
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
@@ -90,8 +107,21 @@ export const authApi = createApi({
                 method: 'POST',
                 body: data,
             })
+        }),
+        resetPassword: builder.mutation<IResetPasswordResponse, IResetPasswordRequest>({
+            query: (data) => ({
+                url: 'api/auth/reset-pin-request',
+                method: 'POST',
+                body: data,
+            })
+        }),
+        confirmResetPasswordPin: builder.mutation<IConfirmResetPasswordPinResponse, IConfirmResetPasswordPinRequest>({
+            query: (data) => ({
+                url: 'api/auth/reset-pin-submit',
+                method: 'POST',
+                body: data,
+            })
         })
-        
     })
 })
 
@@ -100,4 +130,6 @@ export const {
     useLoginMutation,
     useConfirmUserMutation,
     useSentPinMutation,
+    useResetPasswordMutation,
+    useConfirmResetPasswordPinMutation,
 } = authApi;

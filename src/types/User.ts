@@ -11,6 +11,7 @@ export interface IUser {
     role: object,
     photo: {url: string},
     friendsCount: number,
+    isFriend?: boolean;
 }
 
 export interface IUserListItem{
