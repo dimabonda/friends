@@ -10,18 +10,26 @@ import { useSelector } from 'react-redux';
 import { AuthProvider } from '@/providers/authProvider';
 import { Outlet } from "react-router-dom";
 
+
 // const router = createBrowserRouter([...routes]);
-const router = createBrowserRouter([
-    {
-      path: '/',
-      element: (
-        <AuthProvider>
-            <Outlet />
-        </AuthProvider>
-      ),
-      children: [...routes],
-    },
-]);
+const router = createBrowserRouter(
+    [
+        {
+        path: '/',
+        element: (
+            <AuthProvider>
+                <Outlet />
+            </AuthProvider>
+        ),
+        children: [...routes],
+        },
+    ],  {
+        future: {
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+        },
+    }
+);
 
 
 function App() {

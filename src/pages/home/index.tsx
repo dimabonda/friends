@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import type { RootState } from '@/state/store'
 // import AdvertWidget from "scenes/widgets/AdvertWidget";
 // import FriendListWidget from "scenes/widgets/FriendListWidget";
-import FriendListWidget from "@/widgets/FriendListWidget";
+import MyFriendListWidget from "@/widgets/MyFriendListWidget";
 
 
 const Home = () => {
@@ -31,12 +31,12 @@ const Home = () => {
                     mt={isNonMobileScreens ? "" : "2rem"}
                 >
                     <MyPostWidget photo={user?.photo?.url || ""} />
-                    <PostsWidget />
+                    <PostsWidget/>
                 </Box>
                 {isNonMobileScreens && (
                     user && <Box flexBasis="26%">
                         {/* <AdvertWidget /> */}
-                        <FriendListWidget userId={user?.id} />
+                        <MyFriendListWidget />
                     </Box>
                 )}
             </Box>

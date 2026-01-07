@@ -8,10 +8,8 @@ import paths from '@/paths';
 import { useLoginMutation } from "@/state/api/authApi";
 import { IUser } from "@/types/User";
 import { IAuthError } from "@/types/Errors";
-
 import { useToast } from "@/hooks/useToast";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from '@/state/store'
+import FlexBetween from "@/components/FlexBetween";
 
 interface ILoginResponse {
     jwt?: string;
@@ -24,8 +22,6 @@ const validationSchema = yup.object({
 });
 
 const Login:FC = () => {
-    const auth = useSelector((state: RootState) => state.auth);
-    const theme = useTheme();
     const { palette } = useTheme();
     const navigate = useNavigate();
     const isNonMobileScreen = useMediaQuery("(min-width: 600px)");
@@ -42,7 +38,6 @@ const Login:FC = () => {
     const formik = useFormik({
         initialValues,
 		validationSchema,
-        // validateOnBlur: false,
         onSubmit: async (values, helpers): Promise<void> => {
             try {
                 const requestBody = {
@@ -134,23 +129,40 @@ const Login:FC = () => {
                     >
                         {isLoading ? <CircularProgress size={24} sx={{ color: palette.background.alt }} /> : 'LOGIN'}
                     </Button>
-                    <Typography
-                        onClick={() => {
-                            navigate(paths.auth.register);
-                            // navigate(paths.home);
-                            handleResetForm();
-                        }}
-                        sx={{
-                            textDecoration: "underline",
-                            color: palette.primary.main,
-                            "&:hover": {
-                            cursor: "pointer",
-                            color: palette.primary.dark,
-                            },
-                        }}
-                    >
-                        Don't have an account? Sign Up here.
-                    </Typography>
+                    <FlexBetween>
+                        <Typography
+                            onClick={() => {
+                                navigate(paths.auth.register);
+                                handleResetForm();
+                            }}
+                            sx={{
+                                textDecoration: "underline",
+                                color: palette.primary.main,
+                                "&:hover": {
+                                    cursor: "pointer",
+                                    color: palette.primary.dark,
+                                },
+                            }}
+                        >
+                            Don't have an account? Sign Up here.
+                        </Typography>
+                        <Typography
+                            onClick={() => {
+                                navigate(paths.auth.resetPassword);
+                                handleResetForm();
+                            }}
+                            sx={{
+                                textDecoration: "underline",
+                                color: palette.primary.main,
+                                "&:hover": {
+                                    cursor: "pointer",
+                                    color: palette.primary.dark,
+                                },
+                            }}
+                        >
+                            Forgot your password? Reset it here.
+                        </Typography>
+                    </FlexBetween>
                 </Box>
             </form>
         </AuthLayout>

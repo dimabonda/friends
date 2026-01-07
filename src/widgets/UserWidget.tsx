@@ -4,7 +4,7 @@ import {
 	LocationOnOutlined,
 	WorkOutlineOutlined,
 } from "@mui/icons-material";
-import { Box, Typography, Divider, useTheme } from "@mui/material";
+import { Box, Typography, Divider, useTheme, IconButton } from "@mui/material";
 import UserImage from "@/components/UserImage";
 import FlexBetween from "@/components/FlexBetween";
 import { WidgetWrapper } from "@/components/WidgetWrapper";
@@ -13,6 +13,10 @@ import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { IUser } from "@/types/User";
 import { RootState } from "@/state/store";
+import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
+import { useFollowMutation } from "@/state/api/userApi";
+import { IAuthError } from "@/types/Errors";
+import { useToast } from "@/hooks/useToast";
 
 interface UserWidgetProps {
 	user: IUser
@@ -25,6 +29,10 @@ const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 	const dark = palette.neutral.dark;
 	const medium = palette.neutral.medium;
 	const main = palette.neutral.main;
+	const primaryLight = palette.primary.light;
+	const primaryDark = palette.primary.dark;
+	const { showToast } = useToast();
+	const [ follow, { isLoading} ] = useFollowMutation();
 
 	const {
 		id,
@@ -35,9 +43,23 @@ const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 		// viewedProfile,
 		// impressions,
 		friendsCount,
+		isFriend
 	} = user;
 
 	const isCurrentUser = me?.id === id;
+
+	const patchFriend = async () => {
+		if (isCurrentUser) return;
+		try {
+			const response = await follow({userId: id.toString()}).unwrap();
+			if(response?.message){
+				showToast(response.message, 'success');
+			}
+		} catch (err) {
+			const error = err as IAuthError;
+			showToast(error.data?.error?.message || 'Failed to follow user', 'error');
+		}
+	};
 
 	const handleOpenProfile = () => {
 		// navigate(`/profile/${user._id}`);
@@ -72,7 +94,29 @@ const UserWidget: FC<UserWidgetProps> = ({ user }) => {
 						<Typography color={medium}>{friendsCount || 0} {friendsCount > 1 ? "friends" : "friend"}</Typography> 
 					</Box>
 				</FlexBetween>
-				{isCurrentUser && <ManageAccountsOutlined />}
+				{isCurrentUser ? 
+			        <IconButton 
+						sx={{
+							padding: 0,
+							
+						}}
+						onClick={() => navigate('/settings')}
+					>
+						<ManageAccountsOutlined />
+					</IconButton>
+					:
+					<IconButton
+						disabled={isLoading}
+						onClick={() => patchFriend()}
+						sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+					>
+						{isFriend ? (
+							<PersonRemoveOutlined sx={{ color: primaryDark }} />
+						) : (
+							<PersonAddOutlined sx={{ color: primaryDark }} />
+						)}
+					</IconButton>
+				}
 			</FlexBetween>
 
 			<Divider />

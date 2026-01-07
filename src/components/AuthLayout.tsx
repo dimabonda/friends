@@ -3,9 +3,13 @@ import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 interface AuthLayoutProps {
     children?: ReactNode
+    title?: string
 }
 
-export const AuthLayout: FC<AuthLayoutProps> = ({children}) => {
+export const AuthLayout: FC<AuthLayoutProps> = ({
+    children, 
+    title = 'Welcome to Friends — the social network that brings people closer!'
+}) => {
     const theme = useTheme();
     const isNotMobileScreen = useMediaQuery("(min-width: 1000px)");
     return(
@@ -33,7 +37,7 @@ export const AuthLayout: FC<AuthLayoutProps> = ({children}) => {
                 }}
             >
                 <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
-                    Welcome to Friends — the social network that brings people closer!
+                    {title}
                 </Typography>
                 {children}
         </Box>

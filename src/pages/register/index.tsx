@@ -189,7 +189,8 @@ const Register:FC = () => {
                                 accept={{
                                     "image/jpeg": [],
                                     "image/png": [],
-                                    "image/jpg": []
+                                    "image/jpg": [],
+                                    "image/webp": [],
                                 }}
                                 multiple={false}
                             >
@@ -255,15 +256,15 @@ const Register:FC = () => {
                 {/* BUTTONS */}
                 <Box>
                     <Button
-                    fullWidth
-                    type="submit"
-                    sx={{
-                        m: "2rem 0",
-                        p: "1rem",
-                        backgroundColor: palette.primary.main,
-                        color: palette.background.alt,
-                        "&:hover": { color: palette.primary.main },
-                    }}
+                        fullWidth
+                        type="submit"
+                        sx={{
+                            m: "2rem 0",
+                            p: "1rem",
+                            backgroundColor: palette.primary.main,
+                            color: palette.background.alt,
+                            "&:hover": { color: palette.primary.dark },
+                        }}
                     >
                         {isLoading ? <CircularProgress size={24} sx={{ color: palette.background.alt }} /> : 'REGISTER'}
                     </Button>
@@ -276,8 +277,8 @@ const Register:FC = () => {
                             textDecoration: "underline",
                             color: palette.primary.main,
                             "&:hover": {
-                            cursor: "pointer",
-                            color: palette.primary.light,
+                                cursor: "pointer",
+                                color: palette.primary.dark,
                             },
                         }}
                     >

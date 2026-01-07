@@ -4,7 +4,8 @@ import { IFriend, IFriendListItem } from '@/types/Friend';
 import { logout, setCredentials, updateUserFriends } from '@/state/slices/authSlice';
 import { updatePostsIsFriend } from '@/state/slices/postSlice';
 import { setFriends, overwriteFriend, updateFriendsList } from '@/state/slices/friendsSlice';
-import { overwriteUsers, setUsers } from '@/state//slices/userSlice';
+import { overwriteUsers, setUsers, updateIsFriendUsersList } from '@/state/slices/userSlice';
+import { RootState } from "@/state/store";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -88,13 +89,22 @@ export const userApi = createApi({
                 url: `/api/user/${userId}/follow`,
                 method: 'POST',
             }),
-            onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+            onQueryStarted: async ({ userId}, { dispatch, queryFulfilled }) => {
+                const patchProfile = dispatch(
+                    userApi.util.updateQueryData('getUserProfile', { userId }, draft => {
+                        if (draft?.user) {
+                            draft.user.isFriend = !draft.user.isFriend;
+                        }
+                    })
+                );
                 try {
                     const { data } = await queryFulfilled;
                     dispatch(updateUserFriends({isFriend: data.isFriend}))
                     dispatch(updatePostsIsFriend({isFriend: data.isFriend, friendId: data.friend.id}))
                     dispatch(updateFriendsList({friend: data.friend, isFriend: data.isFriend}));
+                    dispatch(updateIsFriendUsersList({userId: data.friend.id, isFriend: data.isFriend}))
                 } catch (err) {
+                    patchProfile.undo();
                     console.error('Error updating user:', err);
                 }
             },
@@ -110,20 +120,55 @@ export const userApi = createApi({
                     method: "GET",
                 }
             },
-            onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+            onQueryStarted: async (args, { dispatch, queryFulfilled, getState }) => {
                 try {
                     const { data } = await queryFulfilled;
-                    const friends = data.friends;
+                    const friends = data?.friends || [];
+                    const hasMore = data?.hasMore || false;
+
+                    const state = getState() as RootState;
+                    const isCurrentUser = state.auth.user?.id === args.userId;
+
+                    if (!isCurrentUser){
+                        return; // Skip if not current user
+                    }
 
                     if (args.lastCursor === null) {
-                        dispatch(overwriteFriend({friends}));
+                        dispatch(overwriteFriend({friends, hasMore})); // Overwrite the list if it's the first page
                     } else {
-                        dispatch(setFriends({friends}));
+                        dispatch(setFriends({friends, hasMore}));
                     }
 
                 } catch (err) {
                     console.error('Error fetching post list:', err);
                 }
+            },
+        }),
+        getUserFriendsList: builder.query<IFriendsListResponse, IFriendsListRequest>({
+            query: ({ lastCursor, pageSize, userId }) => {
+                let url = `api/user/${userId}/friends?pageSize=${pageSize}`;
+                if (lastCursor != null) url += `&lastCursor=${lastCursor}`;
+                return { url, method: "GET" };
+            },
+
+            serializeQueryArgs: ({ queryArgs }) => ({ userId: queryArgs.userId }),
+
+            merge: (currentCache, newItems, { arg }) => {
+                if (!currentCache || arg.lastCursor === null) {
+                    (currentCache as any).friends = newItems.friends.slice();
+                    (currentCache as any).hasMore = newItems.hasMore;
+                    return;
+                }
+                currentCache.friends.push(...newItems.friends);
+                currentCache.hasMore = newItems.hasMore;
+            },
+
+
+            forceRefetch({ currentArg, previousArg }) {
+                return (
+                    currentArg?.userId !== previousArg?.userId ||
+                    currentArg?.lastCursor !== previousArg?.lastCursor
+                );
             },
         }),
         getUserProfile: builder.query<IGetUserProfileResponse, IGetUserProfileRequest>({
@@ -148,7 +193,7 @@ export const userApi = createApi({
                     const { data } = await queryFulfilled;
                     const users = data.users;
                     const count = data.totalCount;
-
+                    
                     if (args.lastCursor === null) {
                         dispatch(overwriteUsers({users, count}));
                     } else {
@@ -166,7 +211,8 @@ export const userApi = createApi({
 export const { 
     useMeQuery, 
     useFollowMutation, 
-    useGetFriendsListQuery, 
+    useGetFriendsListQuery,
+    useGetUserFriendsListQuery, 
     useGetUserProfileQuery,
     useGetUserListQuery,
 } = userApi;

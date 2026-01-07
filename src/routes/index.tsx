@@ -5,8 +5,10 @@ import Register from '@/pages/register';
 import VerifyCode from '@/pages/verify-code';
 import Profile from '@/pages/profile';
 import Home from '@/pages/home';
+import ResetPassword from '@/pages/reset';
+import SetNewPassword from '@/pages/new-password'
 import NotFound from '@/pages/404';
-import ProfileDetails from '@/pages/profile/details';
+import Settings from '@/pages/settings';
 import Layout from '@/pages/layout';
 import { checkTokenValidity } from '@/utils/authUtils';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
@@ -39,6 +41,22 @@ const routes: RouteObject[] = [
         )
     },
     {
+        path: paths.auth.resetPassword,
+        element: (
+            <GuestRoute>
+               <ResetPassword/>
+            </GuestRoute>
+        )
+    },
+    {
+        path: paths.auth.newPassword,
+        element: (
+            <GuestRoute>
+               <SetNewPassword/>
+            </GuestRoute>
+        )
+    },
+    {
         path: paths.home, 
         element: (
             <ProtectedRoute>
@@ -56,10 +74,10 @@ const routes: RouteObject[] = [
                 path: paths.profile.details,
                 element: <Profile/>
             },
-            // {
-            //     path: paths.profile.details,
-            //     element: <ProfileDetails/>
-            // },
+            {
+                path: paths.settings,
+                element: <Settings/>
+            },
         ]
     },
     {

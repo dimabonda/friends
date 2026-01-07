@@ -50,6 +50,7 @@ const NavBar:FC<NavBarProps> = () => {
     const background = theme.palette.background.default;
     const primaryLight = theme.palette.primary.light;
     const alt = theme.palette.background.alt;
+    const popoverShadow = theme.shadows[10];
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -69,6 +70,7 @@ const NavBar:FC<NavBarProps> = () => {
             position: "sticky",
             top: 0,
             zIndex: 100,
+            boxShadow: popoverShadow,
         }}>
             <FlexBetween gap="1.75rem">
                 <Typography

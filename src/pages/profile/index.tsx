@@ -7,7 +7,7 @@ import { RootState } from "@/state/store";
 import UserWidget from "@/widgets/UserWidget";
 import PostsWidget from "@/widgets/PostsWidget";
 import { useGetUserProfileQuery } from "@/state/api/userApi";
-import FriendListWidget from "@/widgets/FriendListWidget";
+import UserFriendListWidget from "@/widgets/UserFriendListWidget";
 
 
 const Profile:FC = () => {
@@ -54,7 +54,7 @@ const Profile:FC = () => {
                 </Box>
                 {isNonMobileScreens && (
                     user && <Box flexBasis="26%">
-                        <FriendListWidget userId={user?.id} />
+                        <UserFriendListWidget userId={user?.id} />
                     </Box>
                 )}
             </Box>
